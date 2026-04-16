@@ -6,16 +6,16 @@ Um site interativo para visualizar o calendário da Copa do Mundo de 2026, inclu
 
 ## Funcionalidades
 
-- **Página Inicial**: Visão geral da Copa 2026.
-- **Calendário**: Lista completa de jogos e datas.
-- **Grupos**: Detalhes dos grupos e equipes participantes.
-- **Fases Eliminatórias**: Simulação das fases knockout.
-- **Interface Responsiva**: Compatível com dispositivos móveis e desktop.
-- **Tema Personalizado**: Utilizando Shadcn UI e Tailwind CSS para um design moderno.
+- Página Inicial: Visão geral da Copa 2026.
+- Calendário: Lista completa de jogos e datas.
+- Grupos: Detalhes dos grupos e equipes participantes.
+- Fases Eliminatórias: Simulação das fases knockout.
+- Interface Responsiva: Compatível com dispositivos móveis e desktop.
+- Tema Personalizado: Utilizando Shadcn UI e Tailwind CSS para um design moderno.
 
 ## Tecnologias Utilizadas
 
-### Dependências Principais
+Dependências Principais
 - **React**: 18.3.1 - Biblioteca para construção de interfaces de usuário.
 - **React DOM**: 18.3.1 - Renderização do React no DOM.
 - **React Router**: 7.13.0 - Roteamento para aplicações React.
@@ -67,93 +67,6 @@ Um site interativo para visualizar o calendário da Copa do Mundo de 2026, inclu
 - **Tailwind CSS**: 4.1.12 - Framework CSS.
 - **Vite**: 6.3.5 - Ferramenta de build.
 
-## Estrutura de Pastas
-
-```
-CalendárioCopa2026/Site/
-├── ATTRIBUTIONS.md          # Atribuições e créditos
-├── default_shadcn_theme.css # Tema padrão Shadcn
-├── index.html               # Arquivo HTML principal
-├── package.json             # Configurações do projeto e dependências
-├── pnpm-lock.yaml           # Lockfile do pnpm
-├── pnpm-workspace.yaml      # Configuração do workspace pnpm
-├── postcss.config.mjs       # Configuração PostCSS
-├── README.md                # Este arquivo
-├── vite.config.ts           # Configuração do Vite
-├── guidelines/              # Diretrizes do projeto
-│   └── Guidelines.md
-├── src/                     # Código fonte
-│   ├── main.tsx             # Ponto de entrada da aplicação
-│   ├── app/
-│   │   ├── App.tsx          # Componente principal da aplicação
-│   │   ├── routes.tsx       # Definição de rotas
-│   │   └── components/      # Componentes reutilizáveis
-│   │       ├── Layout.tsx   # Layout da aplicação
-│   │       ├── figma/       # Componentes específicos do Figma
-│   │       │   └── ImageWithFallback.tsx
-│   │       └── ui/          # Componentes UI (Shadcn)
-│   │           ├── accordion.tsx
-│   │           ├── alert-dialog.tsx
-│   │           ├── alert.tsx
-│   │           ├── aspect-ratio.tsx
-│   │           ├── avatar.tsx
-│   │           ├── badge.tsx
-│   │           ├── breadcrumb.tsx
-│   │           ├── button.tsx
-│   │           ├── calendar.tsx
-│   │           ├── card.tsx
-│   │           ├── carousel.tsx
-│   │           ├── chart.tsx
-│   │           ├── checkbox.tsx
-│   │           ├── collapsible.tsx
-│   │           ├── command.tsx
-│   │           ├── context-menu.tsx
-│   │           ├── dialog.tsx
-│   │           ├── drawer.tsx
-│   │           ├── dropdown-menu.tsx
-│   │           ├── form.tsx
-│   │           ├── hover-card.tsx
-│   │           ├── input-otp.tsx
-│   │           ├── input.tsx
-│   │           ├── label.tsx
-│   │           ├── menubar.tsx
-│   │           ├── navigation-menu.tsx
-│   │           ├── pagination.tsx
-│   │           ├── popover.tsx
-│   │           ├── progress.tsx
-│   │           ├── radio-group.tsx
-│   │           ├── resizable.tsx
-│   │           ├── scroll-area.tsx
-│   │           ├── select.tsx
-│   │           ├── separator.tsx
-│   │           ├── sheet.tsx
-│   │           ├── sidebar.tsx
-│   │           ├── skeleton.tsx
-│   │           ├── slider.tsx
-│   │           ├── sonner.tsx
-│   │           ├── switch.tsx
-│   │           ├── table.tsx
-│   │           ├── tabs.tsx
-│   │           ├── textarea.tsx
-│   │           ├── toggle-group.tsx
-│   │           ├── toggle.tsx
-│   │           ├── tooltip.tsx
-│   │           ├── use-mobile.ts
-│   │           └── utils.ts
-│   ├── data/                 # Dados estáticos
-│   │   └── matches.ts        # Dados dos jogos
-│   ├── pages/                # Páginas da aplicação
-│   │   ├── Calendar.tsx      # Página do Calendário
-│   │   ├── Groups.tsx        # Página dos Grupos
-│   │   ├── Home.tsx          # Página Inicial
-│   │   └── Knockout.tsx      # Página das Fases Eliminatórias
-│   └── styles/               # Estilos
-│       ├── fonts.css         # Fontes
-│       ├── index.css         # Estilos principais
-│       ├── tailwind.css      # Configuração Tailwind
-│       └── theme.css         # Tema personalizado
-```
-
 ## Instalação e Execução
 
 ### Pré-requisitos
@@ -179,37 +92,20 @@ CalendárioCopa2026/Site/
 
 4. Abra o navegador em `http://localhost:5173` (ou a porta indicada).
 
-### Build para Produção
-```bash
-pnpm run build
-```
 
 ## Screenshots
 
 Aqui estão alguns screenshots do programa funcionando:
 
-- **Página Inicial**: ![Página Inicial](inicio.png)
-- **Calendário de Jogos**: ![Calendário de Jogos](calendario.png)
-- **Grupos**: ![Grupos](grupos.png)
-- **Fases Eliminatórias**: ![Fases Eliminatórias](eliminatorias.png)
-
-## Contribuição
-
-Contribuições são bem-vindas! Siga estes passos:
-
-1. Fork o projeto.
-2. Crie uma branch para sua feature (`git checkout -b feature/nova-feature`).
-3. Commit suas mudanças (`git commit -am 'Adiciona nova feature'`).
-4. Push para a branch (`git push origin feature/nova-feature`).
-5. Abra um Pull Request.
+- Página Inicial ![Página Inicial](inicio.png)
+- Calendário de Jogos: ![Calendário de Jogos](calendario.png)
+- Grupos: ![Grupos](grupos.png)
+- Fases Eliminatórias: ![Fases Eliminatórias](eliminatorias.png)
 
 ## Licença
 
 Este projeto está sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.
 
-## Contato
-
-Para dúvidas ou sugestões, entre em contato através do [GitHub Issues](https://github.com/Geehnna/CalendarioCopa2026/issues).
   
 
   
