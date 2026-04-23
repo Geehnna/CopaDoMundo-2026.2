@@ -4,7 +4,6 @@ import { Users, Trophy } from "lucide-react";
 const API = "https://api.wc2026api.com";
 const KEY = "wc26_BYhbyQezyWzy8sCggqf8ii";
 
-/* 🔥 MAPA EXPANDIDO (BASEADO NA SUA LISTA REAL) */
 const flagMap: Record<string, string> = {
   brazil: "br",
   france: "fr",
