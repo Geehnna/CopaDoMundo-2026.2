@@ -1,112 +1,252 @@
-import { groups } from "../data/matches";
+import { useEffect, useState } from "react";
 import { Users, Trophy } from "lucide-react";
 
+const API = "https://api.wc2026api.com";
+const KEY = "wc26_BYhbyQezyWzy8sCggqf8ii";
+
+/* 🔥 MAPA EXPANDIDO (BASEADO NA SUA LISTA REAL) */
+const flagMap: Record<string, string> = {
+  brazil: "br",
+  france: "fr",
+  germany: "de",
+  spain: "es",
+  italy: "it",
+  england: "gb",
+  usa: "us",
+  unitedstates: "us",
+  mexico: "mx",
+  canada: "ca",
+  japan: "jp",
+  sweden: "se",
+  switzerland: "ch",
+  portugal: "pt",
+  uruguay: "uy",
+  argentina: "ar",
+  belgium: "be",
+  netherlands: "nl",
+  croatia: "hr",
+  morocco: "ma",
+  senegal: "sn",
+  australia: "au",
+  qatar: "qa",
+  egypt: "eg",
+  algeria: "dz",
+  norway: "no",
+
+  /* 🔥 SUA API */
+  southafrica: "za",
+  czechia: "cz",
+  korea: "kr",
+  southkorea: "kr",
+  "korearepublic": "kr",
+  haiti: "ht",
+  turkey: "tr",
+  tunisia: "tn",
+  saudiarabia: "sa",
+  paraguay: "py",
+  ecuador: "ec",
+  colombia: "co",
+  ghana: "gh",
+  iraq: "iq",
+  jordan: "jo",
+  austria: "at",
+  panama: "pa",
+  newzealand: "nz",
+
+  /* 🔥 CASOS PROBLEMÁTICOS */
+  "cotedivoire": "ci",
+  ivorycoast: "ci",
+  "côtedivoire": "ci",
+
+  "congodra": "cd",
+  "drcongo": "cd",
+  congo: "cd",
+
+  "caboverde": "cv",
+  "capeverde": "cv",
+
+  "curaçao": "cw",
+  curacao: "cw",
+
+  "iriran": "ir",
+  iran: "ir",
+
+  scotland: "gb-sct",
+};
+
+/* 🔥 NORMALIZAÇÃO ULTRA FORTE */
+function normalize(name: string) {
+  return (name || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // remove acentos
+    .replace(/[^a-z]/g, ""); // remove tudo que não for letra
+}
+
+/* 🔥 BUSCA INTELIGENTE COM FALLBACKS */
+function getFlag(name: string) {
+  const n = normalize(name);
+
+  // 1. match direto
+  if (flagMap[n]) return flagMap[n];
+
+  // 2. fallback manual comum
+  if (n.includes("korea")) return "kr";
+  if (n.includes("usa") || n.includes("unitedstates")) return "us";
+  if (n.includes("czech")) return "cz";
+  if (n.includes("southafrica")) return "za";
+  if (n.includes("cotedivoire") || n.includes("ivory")) return "ci";
+  if (n.includes("congo")) return "cd";
+  if (n.includes("capeverde")) return "cv";
+  if (n.includes("curacao")) return "cw";
+  if (n.includes("iran")) return "ir";
+
+  return "un";
+}
+
+type Team = {
+  name: string;
+  group: string;
+  points: number;
+  played: number;
+  wins: number;
+  losses: number;
+};
+
 export function Groups() {
+  const [groups, setGroups] = useState<Record<string, Team[]>>({});
+  const [loading, setLoading] = useState(true);
+
+  async function fetchAPI(path: string) {
+    const res = await fetch(API + path, {
+      headers: {
+        Authorization: "Bearer " + KEY,
+      },
+    });
+
+    return res.json();
+  }
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const teams = await fetchAPI("/teams");
+        const matches = await fetchAPI("/matches");
+
+        const table: Record<string, Record<string, Team>> = {};
+
+        teams.forEach((t: any) => {
+          if (!table[t.group_name]) table[t.group_name] = {};
+
+          table[t.group_name][t.name] = {
+            name: t.name,
+            group: t.group_name,
+            points: 0,
+            played: 0,
+            wins: 0,
+            losses: 0,
+          };
+        });
+
+        matches.forEach((m: any) => {
+          const home = table[m.group_name]?.[m.home_team];
+          const away = table[m.group_name]?.[m.away_team];
+
+          if (!home || !away) return;
+
+          const homeScore = Number(m.home_score ?? 0);
+          const awayScore = Number(m.away_score ?? 0);
+
+          if (homeScore === 0 && awayScore === 0) return;
+
+          home.played++;
+          away.played++;
+
+          if (homeScore > awayScore) {
+            home.wins++;
+            home.points += 3;
+            away.losses++;
+          } else if (homeScore < awayScore) {
+            away.wins++;
+            away.points += 3;
+            home.losses++;
+          } else {
+            home.points++;
+            away.points++;
+          }
+        });
+
+        const result: Record<string, Team[]> = {};
+
+        Object.keys(table).forEach((g) => {
+          result[g] = Object.values(table[g]).sort(
+            (a, b) => b.points - a.points
+          );
+        });
+
+        setGroups(result);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    load();
+  }, []);
+
+  if (loading) return <div className="text-center py-20">Carregando...</div>;
+
   return (
     <div className="min-h-screen py-12">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <Users className="w-16 h-16 text-purple-600 mx-auto mb-4" />
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Fase de Grupos
-          </h1>
-          <p className="text-gray-600 text-lg">
-            Classificação e resultados dos 12 grupos
-          </p>
+          <Users className="w-16 h-16 mx-auto text-purple-600 mb-4" />
+          <h1 className="text-4xl font-bold">Fase de Grupos</h1>
         </div>
 
-        {/* Groups Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {groups.map((group) => (
-            <div
-              key={group.name}
-              className="bg-white/80 backdrop-blur-md rounded-xl p-6 border border-gray-200 shadow-sm"
-            >
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">{group.name}</h2>
-                <Trophy className="w-6 h-6 text-yellow-600" />
+          {Object.entries(groups).map(([group, teams]) => (
+            <div key={group} className="bg-white p-6 rounded-xl border">
+              <div className="flex justify-between mb-4">
+                <h2 className="font-bold">Grupo {group}</h2>
+                <Trophy className="text-yellow-500" />
               </div>
 
-              {/* Table Header */}
-              <div className="mb-3 w-full">
-    <div className="grid grid-cols-[24px_1fr_40px_40px_40px_40px] gap-2 text-[10px] sm:text-xs text-gray-500 font-bold px-2 items-center uppercase tracking-wider">
-    <div className="flex justify-center">#</div>
-    <div className="text-left">TIME</div>
-    <div className="text-center">PTS</div>
-    <div className="text-center">J</div>
-    <div className="text-center">V</div>
-    <div className="text-center">D</div>
-  </div>
-</div>
+              <div className="grid grid-cols-[24px_1fr_40px_40px_40px_40px] text-xs font-bold text-gray-500 mb-2">
+                <div>#</div>
+                <div>Time</div>
+                <div>PTS</div>
+                <div>J</div>
+                <div>V</div>
+                <div>D</div>
+              </div>
 
-              {/* Teams */}
-              <div className="space-y-2">
-                {group.teams.map((team, index) => (
-                  <div
-                    key={team.name}
-                    className={`grid grid-cols-[24px_1fr_40px_40px_40px_40px] gap-2 items-center p-2 rounded-lg transition-all ${
-                      index < 2
-                        ? "bg-green-100 border border-green-300"
-                        : "bg-gray-50 hover:bg-gray-100"
-                    }`}
-                  >
-                    <div className="text-gray-600 text-xs font-bold text-center">
-                      {index + 1}
-                    </div>
-                    <div className="flex items-center gap-2 min-w-0">
-                      <span className="text-xl flex-shrink-0">{team.flag}</span>
-                      <span className="text-gray-900 font-bold text-xs truncate">
-                        {team.name}
-                      </span>
-                    </div>
-                    <div className="text-center">
-                      <span className="font-bold text-gray-900 text-sm">{team.points}</span>
-                    </div>
-                    <div className="text-center">
-                      <span className="text-gray-600 text-xs">{team.played}</span>
-                    </div>
-                    <div className="text-center">
-                      <span className="text-green-600 text-xs">{team.wins}</span>
-                    </div>
-                    <div className="text-center">
-                      <span className="text-red-600 text-xs">{team.losses}</span>
-                    </div>
+              {teams.map((t, i) => (
+                <div
+                  key={t.name}
+                  className={`grid grid-cols-[24px_1fr_40px_40px_40px_40px] p-2 rounded items-center ${
+                    i < 2 ? "bg-green-100" : "bg-gray-50"
+                  }`}
+                >
+                  <div className="text-xs">{i + 1}</div>
+
+                  {/* 🇧🇷 BANDEIRA GARANTIDA */}
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className={`fi fi-${getFlag(t.name)} fis text-xl`} />
+                    <span className="truncate text-sm font-medium">
+                      {t.name}
+                    </span>
                   </div>
-                ))}
-              </div>
 
-              {/* Legend */}
-              <div className="mt-4 pt-4 border-t border-gray-200">
-                <div className="flex items-center gap-2 text-xs text-gray-600">
-                  <div className="w-3 h-3 bg-green-100 border border-green-300 rounded"></div>
-                  <span>Classificados</span>
+                  <div className="text-center font-bold">{t.points}</div>
+                  <div className="text-center">{t.played}</div>
+                  <div className="text-center text-green-600">{t.wins}</div>
+                  <div className="text-center text-red-600">{t.losses}</div>
                 </div>
-              </div>
+              ))}
             </div>
           ))}
-        </div>
-
-        {/* Info */}
-        <div className="mt-12 bg-white/80 backdrop-blur-md rounded-xl p-6 border border-gray-200 max-w-3xl mx-auto shadow-sm">
-          <h3 className="text-xl font-bold text-gray-900 mb-4">Como funciona?</h3>
-          <ul className="space-y-2 text-gray-700">
-            <li className="flex items-start gap-2">
-              <span className="text-purple-600 mt-1">•</span>
-              <span>Os dois primeiros colocados de cada grupo se classificam para as oitavas de final</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-purple-600 mt-1">•</span>
-              <span>Os 8 melhores terceiros colocados também avançam para as oitavas de final</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-purple-600 mt-1">•</span>
-              <span>Em caso de empate em pontos, os critérios de desempate são: saldo de gols, gols marcados e confronto direto</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-purple-600 mt-1">•</span>
-              <span>Cada vitória vale 3 pontos, empate 1 ponto e derrota 0 pontos</span>
-            </li>
-          </ul>
         </div>
       </div>
     </div>
