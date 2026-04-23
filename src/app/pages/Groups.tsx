@@ -32,7 +32,6 @@ const flagMap: Record<string, string> = {
   algeria: "dz",
   norway: "no",
 
-  /* 🔥 SUA API */
   southafrica: "za",
   czechia: "cz",
   korea: "kr",
@@ -52,7 +51,6 @@ const flagMap: Record<string, string> = {
   panama: "pa",
   newzealand: "nz",
 
-  /* 🔥 CASOS PROBLEMÁTICOS */
   "cotedivoire": "ci",
   ivorycoast: "ci",
   "côtedivoire": "ci",
@@ -73,7 +71,6 @@ const flagMap: Record<string, string> = {
   scotland: "gb-sct",
 };
 
-/* 🔥 NORMALIZAÇÃO ULTRA FORTE */
 function normalize(name: string) {
   return (name || "")
     .toLowerCase()
@@ -82,14 +79,11 @@ function normalize(name: string) {
     .replace(/[^a-z]/g, ""); // remove tudo que não for letra
 }
 
-/* 🔥 BUSCA INTELIGENTE COM FALLBACKS */
 function getFlag(name: string) {
   const n = normalize(name);
 
-  // 1. match direto
   if (flagMap[n]) return flagMap[n];
 
-  // 2. fallback manual comum
   if (n.includes("korea")) return "kr";
   if (n.includes("usa") || n.includes("unitedstates")) return "us";
   if (n.includes("czech")) return "cz";
