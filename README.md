@@ -100,4 +100,3 @@ Aqui estão alguns screenshots do programa funcionando:
 - Calendário de Jogos: ![Calendário de Jogos](calendario.png)
 - Grupos: ![Grupos](grupos.png)
 - Fases Eliminatórias: ![Fases Eliminatórias](eliminatorias.png)
-import App from "./desktop/App";
